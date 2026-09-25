@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Symulator budżetu Gminy — Walne Zgromadzenie GWŻ</title>
+  <link rel="stylesheet" href="/style.css" />
+  <style>
+    .sim-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 4px 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .sim-row .sim-label {
+      font-size: 14px;
+      font-weight: 600;
+      grid-column: 1 / 2;
+    }
+    .sim-row .sim-value {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent-dark);
+      text-align: right;
+      min-width: 92px;
+      grid-column: 2 / 3;
+    }
+    .sim-row input[type="range"] {
+      grid-column: 1 / 3;
+      width: 100%;
+      accent-color: #185fa5;
+      height: 6px;
+    }
+    .sim-total {
+      position: sticky;
+      bottom: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-top: 18px;
+      box-shadow: 0 -6px 16px rgba(0,0,0,0.05);
+    }
+    .sim-total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .sim-total-row span:last-child { color: var(--accent-dark); }
+    .sim-delta {
+      font-size: 13px;
+      margin-top: 4px;
+      text-align: right;
+    }
+    .sim-delta.over { color: #a32d2d; }
+    .sim-delta.under { color: #27500a; }
+    .sim-delta.equal { color: var(--text-secondary); }
+    .sim-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 10px;
+    }
+    .sim-reset {
+      font-size: 13px;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 6px 12px;
+      cursor: pointer;
+      color: var(--text-secondary);
+    }
+    .sim-reset:hover { border-color: var(--accent); color: var(--accent-dark); }
+    .sim-unit-note {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin: -8px 0 18px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="site-nav">
+    <div class="site-nav-inner">
+      <a class="brand" href="/">
+        <img src="/assets/logogwz.jpg" alt="Logo Gminy Wyznaniowej Żydowskiej w Warszawie" />
+        <span>Gmina Wyznaniowa Żydowska<br/>w Warszawie<br/><em style="font-weight:400; font-size:11px; color:var(--text-secondary);">(moja prywatna inicjatywa)</em></span>
+      </a>
+      <button class="nav-toggle" aria-label="Otwórz menu">&#9776;</button>
+      <ul class="nav-menu">
+        <li><a href="/">Strona główna</a></li>
+        <li>
+          <button type="button">Gorące tematy</button>
+          <div class="dropdown">
+            <a href="/gorace-tematy/proces-synagoga.html">Proces o synagogę i Biały Budynek – dlaczego przegramy</a>
+            <a href="/gorace-tematy/laszon-hara.html">Laszon Hara</a>
+            <a href="/gorace-tematy/ofiary-mobbingu.html">Ofiary mobbingu w Gminie</a>
+            <a href="/gorace-tematy/budzet.html">Budżet GWŻ – dlaczego za 3 lata zbankrutujemy</a>
+            <a href="/gorace-tematy/symulator-budzetu.html">Symulator budżetu Gminy</a>
+            <a href="/gorace-tematy/ulica-smetna.html">Coraz bardziej smętna historia ulicy Smętnej</a>
+            <a href="/gorace-tematy/przeplaca.html">Dlaczego Gmina za wszystko przepłaca?</a>
+            <a href="/gorace-tematy/misiewicze.html">„Misiewicze” w akcji</a>
+            <a href="/gorace-tematy/misiewicze-reaktywacja.html">„Misiewicze” Reaktywacja</a>
+            <a href="/gorace-tematy/zarzad-fatalnie.html">Dlaczego Zarząd tak fatalnie pracuje?</a>
+          </div>
+        </li>
+        <li>
+          <button type="button">Projekty uchwał</button>
+          <div class="dropdown">
+            <a href="/uchwaly/zrownowazenie-budzetu.html">Uchwała w sprawie zrównoważenia budżetu</a>
+            <a href="/uchwaly/regulamin-zarzadu.html">Uchwała w sprawie zmiany Regulaminu Prac Zarządu</a>
+            <a href="/uchwaly/polityka-zakupow.html">Uchwała w sprawie zmiany Polityki Zakupów</a>
+            <a href="/uchwaly/ugoda-zgwz.html">Uchwała w sprawie ugody w sporze z ZGWŻ</a>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="page content-page">
+    <p class="breadcrumb"><a href="/">Strona główna</a> / Gorące tematy</p>
+    <h1>Symulator budżetu Gminy</h1>
+    <p class="lead">Przesuń suwaki, żeby zobaczyć, jak zmiana wydatków na poszczególne działy wpływa na łączny budżet. Wartości startowe odpowiadają obecnemu podziałowi.</p>
+    <p class="sim-unit-note">Kwoty w tysiącach złotych rocznie.</p>
+
+    <div id="sim-rows"></div>
+
+    <div class="sim-total">
+      <div class="sim-total-row">
+        <span>Razem</span>
+        <span id="sim-total-value">4050 tys. zł</span>
+      </div>
+      <div id="sim-delta" class="sim-delta equal">tyle samo co obecnie</div>
+      <div class="sim-actions">
+        <button class="sim-reset" id="sim-reset">Przywróć wartości domyślne</button>
+      </div>
+    </div>
+
+    <p style="margin-top:1.5rem;"><a href="/">&larr; Powrót na stronę główną</a></p>
+  </div>
+  <script src="/nav.js"></script>
+  <script>
+    const items = [
+      { name: "Utrzymanie biura rabina", value: 300 },
+      { name: "Synagoga Nożyków", value: 400 },
+      { name: "Synagoga Ec Chaim", value: 300 },
+      { name: "Zarząd", value: 500 },
+      { name: "Cmentarz Okopowa", value: 400 },
+      { name: "Biuro Nieruchomości", value: 500 },
+      { name: "Cmentarz Bródno", value: 200 },
+      { name: "Cmentarze zamiejscowe", value: 250 },
+      { name: "Opieka Społeczna", value: 900 },
+      { name: "Biuro Komunikacji Społecznej", value: 300 },
+    ];
+    const ORIGINAL_TOTAL = items.reduce((sum, it) => sum + it.value, 0);
+
+    const rowsEl = document.getElementById("sim-rows");
+    const totalEl = document.getElementById("sim-total-value");
+    const deltaEl = document.getElementById("sim-delta");
+
+    function maxFor(value) {
+      // Górny limit suwaka: zaokrąglone do 100 w górę, co najmniej 2x wartości startowej.
+      const base = Math.max(value * 2, value + 300);
+      return Math.ceil(base / 100) * 100;
+    }
+
+    items.forEach((item, idx) => {
+      const row = document.createElement("div");
+      row.className = "sim-row";
+      row.innerHTML = `
+        <span class="sim-label">${item.name}</span>
+        <span class="sim-value" id="sim-value-${idx}">${item.value} tys. zł</span>
+        <input type="range" id="sim-slider-${idx}" min="0" max="${maxFor(item.value)}" step="10" value="${item.value}" />
+      `;
+      rowsEl.appendChild(row);
+    });
+
+    function formatDelta(diff) {
+      if (diff === 0) return { text: "tyle samo co obecnie", cls: "equal" };
+      const sign = diff > 0 ? "+" : "";
+      const cls = diff > 0 ? "over" : "under";
+      const word = diff > 0 ? "więcej" : "mniej";
+      return { text: `${sign}${diff} tys. zł ${word} niż obecnie`, cls };
+    }
+
+    function recalc() {
+      let total = 0;
+      items.forEach((item, idx) => {
+        const slider = document.getElementById(`sim-slider-${idx}`);
+        const val = parseInt(slider.value, 10);
+        document.getElementById(`sim-value-${idx}`).textContent = `${val} tys. zł`;
+        total += val;
+      });
+      totalEl.textContent = `${total} tys. zł`;
+      const diff = total - ORIGINAL_TOTAL;
+      const { text, cls } = formatDelta(diff);
+      deltaEl.textContent = text;
+      deltaEl.className = `sim-delta ${cls}`;
+    }
+
+    items.forEach((_, idx) => {
+      document.getElementById(`sim-slider-${idx}`).addEventListener("input", recalc);
+    });
+
+    document.getElementById("sim-reset").addEventListener("click", () => {
+      items.forEach((item, idx) => {
+        document.getElementById(`sim-slider-${idx}`).value = item.value;
+      });
+      recalc();
+    });
+
+    recalc();
+  </script>
+</body>
+</html>
