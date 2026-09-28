@@ -34,10 +34,9 @@ public/
     misiewicze-reaktywacja.html             „wkrótce” — 9 października
     zarzad-fatalnie.html                     „wkrótce” — 13 października
   uchwaly/
-    zrownowazenie-budzetu.html      „wkrótce” — 28 września
+    zrownowazenie-budzetu.html      „wkrótce” — 16 października
     regulamin-zarzadu.html           „wkrótce” — 13 października
     polityka-zakupow.html             „wkrótce” — 5 października
-    ugoda-zgwz.html                    tekst zastępczy (lorem ipsum), bez daty
 ```
 
 ## Wdrożenie na Cloudflare (Workers + Git)
