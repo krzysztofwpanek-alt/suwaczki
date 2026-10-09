@@ -34,8 +34,7 @@ public/
     symulator-budzetu.html              „wkrótce” — wieczorem 17 października (miejsce na aplikację do głosowania)
     ulica-smetna.html                    PEŁNY ARTYKUŁ — plany drogi przez cmentarz Okopowa / mur getta (11 zdjęć)
     przeplaca.html                    PEŁNY TEKST o konkursach ofert + pełny tekst Procedury zakupowej (czerwone zmiany, 2 zdjęcia, PDF)
-    misiewicze.html                        „wkrótce” — 8 października
-    misiewicze-reaktywacja.html             „wkrótce” — 9 października
+    misiewicze.html                        pełny tekst + 2 zdjęcia (assets/misiewicze/)
     zarzad-fatalnie.html                     „wkrótce” — 13 października
   uchwaly/
     zrownowazenie-budzetu.html      „wkrótce” — 16 października
