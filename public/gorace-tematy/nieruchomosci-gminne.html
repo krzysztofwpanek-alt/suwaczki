@@ -215,6 +215,7 @@ document.getElementById("t-noavir").textContent = zl(noAvir);
 document.getElementById("t-avir").textContent = zl(withAvir);
 document.getElementById("t-sold").textContent = zl(sold);
 
+DATA.sort((x,y)=>x.d.localeCompare(y.d)); // chronologicznie wg daty nabycia lub zbycia (od najstarszej)
 DATA.forEach((r,i)=>r.lp=i+1);
 let filter = "all", query = "";
 
